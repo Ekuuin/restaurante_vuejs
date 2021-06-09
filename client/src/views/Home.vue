@@ -2,7 +2,7 @@
   <v-container>
       <v-row class='ml-16'>
         <v-spacer></v-spacer>
-        <v-col cols='3'>
+        <v-col cols='auto'>
           <a 
           style="color:#FCD55F; 
               font-family: 'Suez One'; 

@@ -1,5 +1,19 @@
 <template>
     <v-container>
+        <v-row>
+            <v-spacer></v-spacer>
+            <v-col cols='auto'>
+                <a 
+                style="color:#FCD55F; 
+                    font-family: 'Suez One'; 
+                    font-size: 50px; 
+                    text-stroke: 0.2px black; 
+                    text-shadow: -1px 1px 1px #000, 1px 1px 1px #000, -1px 1px 1px #000, 1px -1px 1px #000">
+                    Órdenes Mesa {{$route.params.id}}
+                </a>
+            </v-col>
+            <v-spacer></v-spacer>
+      </v-row>
         <v-data-table
             :headers="headers"
             :items="orden"
@@ -7,7 +21,6 @@
    >
             <template v-slot:top>
                 <v-toolbar flat>
-                   <v-toolbar-title>Orden</v-toolbar-title>
                    <v-spacer></v-spacer>
                    <v-btn color='success' @click="nl_dialog = true" >Nueva Orden</v-btn>
                 </v-toolbar>

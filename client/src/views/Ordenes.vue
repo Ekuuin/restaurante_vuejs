@@ -127,7 +127,7 @@ export default {
         },
 
         cancelar(){
-            this.nueva_orden = {};
+            this.nueva_orden.ord_mro_nue = {};
             this.nl_dialog = false;
         },
 

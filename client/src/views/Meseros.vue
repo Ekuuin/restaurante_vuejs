@@ -33,8 +33,8 @@
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
-                <v-select v-model="nuevo_mesero.mro_honorarios" label = 'Honorarios' type: int>
-                </v-select>
+                <v-text-field v-model="nuevo_mesero.mro_honorarios" label = 'Honorarios' type: int>
+                </v-text-field>
               </v-col>
             </v-row>
             <v-row>

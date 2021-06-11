@@ -16,7 +16,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/clientes', require('./routes/cliente'));
 app.use('/mesas', require('./routes/mesa'));
 app.use('/productos', require('./routes/producto'));
-app.use('/mesa', require('./routes/orden'));
+app.use('/ordenes', require('./routes/orden'));
+app.use('/meseros', require('./routes/mesero'));
 
 app.listen(3000, function(){
     console.log('API está corriendo');

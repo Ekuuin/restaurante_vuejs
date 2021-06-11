@@ -5,13 +5,9 @@ const connection = require('../connection');
 router.get('/todas_las_ordenes/', async (req, res) => {
     try{
         const ord_mesa_id = req.query.mesa_id;
-        const query = 'SELECT o.ord_id, o.ord_mesa_id, mr.mro_nombre, p.prod_nombre, d.dp_cantidadPedida, p.prod_precio '+
-                        'FROM orden AS o '+
-                        'INNER JOIN mesero AS mr ON o.ord_mro_nue = mr.mro_nue '+
-                        'INNER JOIN detallepedido AS d ON o.ord_id = d.dp_ord_id '+
-                        'INNER JOIN producto AS p ON d.dp_prod_id = p.prod_id '+
-                        'INNER JOIN mesa AS m ON m.mesa_id = o.ord_mesa_id '+
-                        'WHERE o.ord_mesa_id = ?';
+        const query = 'SELECT m.mro_nombre, o.* FROM orden AS o '+
+                        'INNER JOIN mesero AS m ON m.mro_nue = o.ord_mro_nue '+
+                        'WHERE ord_mesa_id = ?';
         const ordenes = await connection.query(query, [ord_mesa_id]);
 
         res.json(ordenes);
@@ -24,7 +20,7 @@ router.get('/todas_las_ordenes/', async (req, res) => {
 
 router.get('/meseros', async (req, res) => {
     try{
-        const query = 'SELECT mro_nombre FROM mesero';
+        const query = 'SELECT * FROM mesero';
         const meseros = await connection.query(query);
 
         res.json(meseros);
@@ -38,7 +34,7 @@ router.get('/meseros', async (req, res) => {
 router.post('/eliminar_orden', async (req, res) => {
     try{
         const ord_id = req.body.ord_id;
-        const query = 'DELETE FROM cliente WHERE ord_id = ?';
+        const query = 'DELETE FROM orden WHERE ord_id = ?';
         const result = await connection.query(query, [ord_id]);
 
         res.json('OK');
@@ -49,11 +45,11 @@ router.post('/eliminar_orden', async (req, res) => {
     }
 });
 
-router.post('/nueva_orden', async (req, res) => { //Función asíncrona
+router.post('/nueva_orden', async (req, res) => {
     try{
         const body = req.body;
-        const query = 'INSERT INTO cliente (ord_mesa_id) VALUES (?)';
-        const result = await connection.query(query, [body.ord_mesa_id]);
+        const query = 'INSERT INTO orden (ord_mesa_id, ord_fecha, ord_mro_nue, ord_pagada) VALUES (?, NOW(), ?, ?)';
+        const result = await connection.query(query, [body.ord_mesa_id, body.ord_mro_nue, body.ord_pagada]);
 
         res.json('OK');
     } catch(error){

@@ -26,6 +26,11 @@ const routes = [
     props: true,
     component: () => import('../views/Ordenes.vue')
   },
+  {
+    path: '/Meseros',
+    name: 'Meseros',
+    component: () => import('../views/Meseros.vue')
+  },
 ]
 
 const router = new VueRouter({

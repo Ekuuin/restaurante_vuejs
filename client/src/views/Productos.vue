@@ -25,20 +25,20 @@
     </v-data-table>
 
     <v-dialog v-model='nl_dialog' max-width="500px">
-      <v-card>
+      <v-card style="background-color:#FCD55F">
         <v-card-title>
           Nuevo Producto
         </v-card-title>
         <v-card-text>
-          <v-container>
+          <v-container style="background-color:#FC6C5F">
             <v-row>
               <v-col cols = '6'>
                 <v-text-field v-model="nuevo_producto.prod_nombre" label = 'Nombre'>
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
-                <v-select v-model="nuevo_producto.prod_cat_id" label = 'Categoria' :items="categorias" item-text="cat_nombre" item-value="cat_id">
-                </v-select>
+                <v-autocomplete v-model="nuevo_producto.prod_cat_id" label = 'Categoria' :items="categorias" item-text="cat_nombre" item-value="cat_id">
+                </v-autocomplete>
               </v-col>
             </v-row>
             <v-row>
@@ -62,12 +62,12 @@
     </v-dialog>
 
     <v-dialog v-model='np_dialog' max-width="500px">
-      <v-card>
+      <v-card style="background-color:#FCD55F">
         <v-card-title>
           Nueva Categoria
         </v-card-title>
       <v-card-text>
-        <v-container>
+        <v-container style="background-color:#FC6C5F">
           <v-row>
             <v-col cols = '6'>
                 <v-text-field v-model="nueva_categoria.cat_nombre" label = 'Nombre'>
@@ -93,7 +93,7 @@
       <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color = 'success' @click="guardar_cat()">Guardar</v-btn>
-          <v-btn color = 'error' @click="cancelar()">Cancelar</v-btn>
+          <v-btn color = 'error' @click="cancelar()">Salir</v-btn>
         </v-card-actions>
 
       </v-card>
@@ -195,8 +195,8 @@
 
       async guardar_cat(){
         await this.axios.post('productos/nueva_categoria', this.nueva_categoria);
-        this.cancelar();
         this.llenar_categorias();
+        this.nueva_categoria = {};
       },
       
 

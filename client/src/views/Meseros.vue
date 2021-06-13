@@ -21,12 +21,12 @@
     </v-data-table>
 
     <v-dialog v-model='nl_dialog' max-width="500px">
-      <v-card>
+      <v-card style="background-color:#FCD55F">
         <v-card-title>
           Nuevo Mesero
         </v-card-title>
         <v-card-text>
-          <v-container>
+          <v-container style="background-color:#FC6C5F">
             <v-row>
               <v-col cols = '6'>
                 <v-text-field v-model="nuevo_mesero.mro_nombre" label = 'Nombre'>

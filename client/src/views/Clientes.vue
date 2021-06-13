@@ -21,28 +21,28 @@
     </v-data-table>
 
     <v-dialog v-model='nl_dialog' max-width="500px">
-      <v-card>
+      <v-card style="background-color:#FCD55F">
         <v-card-title>
           Nuevo Cliente
         </v-card-title>
         <v-card-text>
-          <v-container>
+          <v-container style="background-color:#FC6C5F">
             <v-row>
               <v-col cols = '6'>
                 <v-text-field v-model="nuevo_cliente.cli_nombre" label = 'Nombre'>
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
-                <v-text-field v-model="nuevo_cliente.cli_direccion" label = 'direccion'>
+                <v-text-field v-model="nuevo_cliente.cli_direccion" label = 'Dirección'>
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
-                <v-text-field v-model="nuevo_cliente.cli_telefono" label = 'Telefono'>
+                <v-text-field v-model="nuevo_cliente.cli_telefono" label = 'Teléfono'>
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
-                <v-select v-model="nuevo_cliente.cli_mesa_id" label = 'Mesa' :items="mesas" item-text="mesa_id" item-value="mesa_id" outlined>
-                </v-select>
+                <v-autocomplete v-model="nuevo_cliente.cli_mesa_id" label = 'Mesa' :items="mesas" item-text="mesa_id" item-value="mesa_id" outlined>
+                </v-autocomplete>
               </v-col>
             </v-row>
           </v-container>
@@ -116,7 +116,9 @@
       },
 
       async guardar(){
-        await this.axios.post('clientes/nuevo_cliente', this.nuevo_cliente);
+        const response = await this.axios.post('clientes/nuevo_cliente', this.nuevo_cliente);
+        if(response.data != 'OK')
+          alert("No hay lugares disponibles en esta mesa :(");
         this.llenar_clientes();
         this.cancelar();
       },

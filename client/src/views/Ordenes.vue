@@ -38,10 +38,10 @@
         </v-data-table>
 
         <v-dialog v-model='nl_dialog' max-width="500px">
-            <v-card>
+            <v-card style="background-color:#FCD55F">
                 <v-card-title>Nueva Orden</v-card-title>
                 <v-card-text>
-                    <v-container>
+                    <v-container style="background-color:#FC6C5F">
                         <v-row>
                             <v-col cols="12">
                                 <v-select
@@ -65,15 +65,15 @@
             </v-card>
         </v-dialog>
 
-        <v-dialog v-model='np_dialog' max-width="800px" persistent>
-             <v-card style="background-color:#FC6C5F">
+        <v-dialog v-model='np_dialog' max-width="800px">
+             <v-card style="background-color:#FCD55F">
                 <v-card-title>
                     Agregar Productos
                     <v-spacer></v-spacer>
                     <v-btn color="success" @click="agregar_renglon()">Agregar Producto</v-btn>
                 </v-card-title>
                 <v-card-text>
-                    <v-container v-for="(articulo, index) in det_pedido" :key="index" style="background-color:#FCD55F">
+                    <v-container v-for="(articulo, index) in det_pedido" :key="index" style="background-color:#FC6C5F">
                             <v-row>
                                 {{det_pedido.index}}
                                 <v-col cols="6">
@@ -93,20 +93,31 @@
                                        label="Producto"
                                        item-text="prod_nombre"
                                        item-value="prod_id"
+                                       :disabled="articulo.cat.length == 0"
                                     >
                                     </v-select>
                                 </v-col>
                             </v-row>
                             <v-row>
                                 <v-col cols = '6'>
-                                    <v-text-field v-model="articulo.dp_cantidadPedida" label = 'Cantidad' single-line filled>
+                                    <v-text-field 
+                                        v-model="articulo.dp_cantidadPedida" 
+                                        label = 'Cantidad' 
+                                        single-line 
+                                        filled
+                                        :disabled="articulo.dp_prod_id.length == 0">
                                     </v-text-field>
                                 </v-col>
                                 <v-col cols = '6'>
-                                    <v-text-field v-model="articulo.dp_especificaciones" label = 'Especificaciones' single-line filled>
+                                    <v-text-field 
+                                        v-model="articulo.dp_especificaciones" 
+                                        label = 'Especificaciones' 
+                                        single-line 
+                                        filled
+                                        :disabled="articulo.dp_prod_id.length == 0">
                                     </v-text-field>
                                 </v-col>
-                                <hr style="height: 5px ; width: 100%; background-color: #FC6C5F; border-color: #FC6C5F; border-top: #FC6C5F; border-left: #FC6C5F">
+                                <hr style="height: 5px ; width: 100%; background-color: #FCD55F; border-color: #FCD55F; border-top: #FCD55F; border-left: #FCD55F">
                             </v-row>
                     </v-container>
                 </v-card-text>
@@ -116,7 +127,6 @@
                     <v-btn color="error" @click="cancelar()"> Cancelar</v-btn> 
                    <v-spacer></v-spacer>
                 </v-card-actions>
-                {{det_pedido}}
             </v-card>
         </v-dialog>
 

@@ -33,8 +33,8 @@ router.post('/eliminar_cliente', async (req, res) => {
 router.post('/nuevo_cliente', async (req, res) => {
     try{
         const body = req.body;
-        const query = 'INSERT INTO cliente (cli_nombre, cli_mesa_id) VALUES (? , ?)';
-        const result = await connection.query(query, [body.cli_nombre, body.cli_mesa_id]);
+        const query = 'INSERT INTO cliente (cli_nombre, cli_mesa_id, cli_direccion, cli_telefono) VALUES (? , ?, ?, ?)';
+        const result = await connection.query(query, [body.cli_nombre, body.cli_mesa_id, body.cli_direccion, body.cli_telefono]);
 
         res.json('OK');
     } catch(error){

@@ -33,6 +33,14 @@
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
+                <v-text-field v-model="nuevo_cliente.cli_direccion" label = 'direccion'>
+                </v-text-field>
+              </v-col>
+              <v-col cols = '6'>
+                <v-text-field v-model="nuevo_cliente.cli_telefono" label = 'Telefono'>
+                </v-text-field>
+              </v-col>
+              <v-col cols = '6'>
                 <v-select v-model="nuevo_cliente.cli_mesa_id" label = 'Mesa' :items="mesas" item-text="mesa_id" item-value="mesa_id" outlined>
                 </v-select>
               </v-col>
@@ -80,7 +88,7 @@
 
     created(){
       this.llenar_clientes();
-      this.escoger_mesa();
+      this.llenar_mesa();
     },
 
     methods:{
@@ -89,8 +97,8 @@
         this.clientes = api_data.data;
       },
 
-      async escoger_mesa(){
-        const api_data = await this.axios.get('mesas/escoger_mesa');
+      async llenar_mesa(){
+        const api_data = await this.axios.get('mesas/llenar_mesa');
         this.mesas = api_data.data;
       },
       

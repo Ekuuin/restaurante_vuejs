@@ -9,9 +9,13 @@
           <v-toolbar flat color="primary">
             <v-toolbar-title>Productos</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn color = 'success' @click='nl_dialog = true' >Nuevo Producto</v-btn>
+            <v-btn color = 'success' @click='nl_dialog = true'  class="mr-3">Nuevo Producto</v-btn>
+        
+            <v-btn color = 'success' @click='np_dialog = true' >Nueva Categoria</v-btn>
           </v-toolbar>
       </template>
+      
+
 
       <template v-slot:[`item.actions`]="{item}">
         <v-icon @click="eliminar_producto(item)" small>
@@ -56,6 +60,46 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model='np_dialog' max-width="500px">
+      <v-card>
+        <v-card-title>
+          Nueva Categoria
+        </v-card-title>
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col cols = '6'>
+                <v-text-field v-model="nueva_categoria.cat_nombre" label = 'Nombre'>
+                </v-text-field>
+              </v-col>
+          </v-row>
+           
+          <v-data-table style="color:black"
+            :headers="cat"
+            :items="categorias"
+            :items-per-page="5"
+            >
+            <template v-slot:[`item.actions`]="{item}">
+               <v-icon @click="eliminar_categoria(item)" small>
+                  fas fa-trash
+               </v-icon>
+            </template>
+          </v-data-table>
+          
+           
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color = 'success' @click="guardar_cat()">Guardar</v-btn>
+          <v-btn color = 'error' @click="cancelar()">Cancelar</v-btn>
+        </v-card-actions>
+
+      </v-card>
+    </v-dialog>
+
+   
   </v-container>
 </template>
 
@@ -76,18 +120,30 @@
           { text: 'Existencia', value: 'prod_existencia'},
           { text: 'Acciones', value: 'actions'},  
         ],
+
+        cat: [
+          {text: 'identificador', color: 'red', align: 'start', sortable: false, value: 'cat_id', },
+          {text: 'Nombre', value: 'cat_nombre'},
+          {text: 'Acciones', value: 'actions'},
+        ],
+
         productos: [
         ],
         categorias: [
         ],
 
         nl_dialog: false,
+        np_dialog: false,
 
         nuevo_producto: {
           prod_nombre: '',
           cat_nombre: '',
           prod_precio: '',
           prod_existencia: '',
+        },
+
+        nueva_categoria:{
+          cat_nombre: '',
         }
       }
     },
@@ -116,9 +172,19 @@
         this.llenar_productos();
       },
 
+      async eliminar_categoria(item){
+        const body = {
+          cat_id: item.cat_id
+        };
+        await this.axios.post('productos/eliminar_categoria', body);
+        this.llenar_categorias();
+      },
+
       cancelar(){
           this.nuevo_producto = {};
+          this.nueva_categoria = {};
           this.nl_dialog = false;
+          this.np_dialog = false;
       },
 
       async guardar(){
@@ -126,6 +192,13 @@
         this.llenar_productos();
         this.cancelar();
       },
+
+      async guardar_cat(){
+        await this.axios.post('productos/nueva_categoria', this.nueva_categoria);
+        this.cancelar();
+        this.llenar_categorias();
+      },
+      
 
     },
     components: {

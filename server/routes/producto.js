@@ -42,6 +42,20 @@ router.post('/eliminar_producto', async (req, res) => {
     }
 });
 
+router.post('/eliminar_categoria', async (req, res) => {
+    try{
+        const cat_id = req.body.cat_id;
+        const query = 'DELETE FROM categoria WHERE cat_id = ?';
+        const result = await connection.query(query, [cat_id]);
+
+        res.json('OK');
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
 router.post('/nuevo_producto', async (req, res) => { 
     try{
         const body = req.body;
@@ -54,5 +68,19 @@ router.post('/nuevo_producto', async (req, res) => {
         });
     }
 });
+
+router.post('/nueva_categoria', async (req, res) => { 
+    try{
+        const body = req.body;
+        const query = 'INSERT INTO categoria (cat_nombre) VALUES (?)';
+        const result = await connection.query(query, [body.cat_nombre]);
+        res.json('OK');
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
 
 module.exports = router;

@@ -18,9 +18,22 @@ router.get('/mesas_disponibles', async (req, res) => {
     }
 });
 
-router.get('/escoger_mesa', async (req, res) => {
+router.get('/llenar_mesa', async (req, res) => {
     try{
-        const query = 'SELECT mesa.mesa_id FROM mesa';
+        const query = 'SELECT mesa_id FROM mesa';
+        const mesas = await connection.query(query);
+
+        res.json(mesas);
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
+router.get('/llenar_capacidad', async (req, res) => {
+    try{
+        const query = 'SELECT mesa_capacidad FROM mesa';
         const mesas = await connection.query(query);
 
         res.json(mesas);

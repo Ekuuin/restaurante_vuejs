@@ -26,22 +26,22 @@
           <v-img  class='mt-10' src="@/assets/disp.png" contain max-height="70" max-width="70"></v-img>
         </div>
         <v-col cols='auto'>
-        <router-link :to="{name: 'Ordenes', params: {id: 1}}"><v-img src="@/assets/mesa.png" contain height="130" width="100"></v-img></router-link>
+          <router-link :to="{name: 'Ordenes', params: {id: 1}}"><v-img src="@/assets/mesa.png" contain height="130" width="100"></v-img></router-link>
         </v-col>
         <span> 
-                <br>No.1
-                <br>Capacidad 6
+          <br>No.1
+          <br>Capacidad {{mesas_capacidad[0].mesa_capacidad}}
         </span>
         <v-spacer></v-spacer>
         <div v-show="disp[1].cli_id !== null">
           <v-img  class='mt-10' src="@/assets/disp.png" contain max-height="70" max-width="70"></v-img>
         </div>
         <v-col cols='auto'>
-        <router-link :to="{name: 'Ordenes', params: {id: 2}}"><v-img src="@/assets/mesa.png" contain height="130" width="100"></v-img></router-link>
+          <router-link :to="{name: 'Ordenes', params: {id: 2}}"><v-img src="@/assets/mesa.png" contain height="130" width="100"></v-img></router-link>
         </v-col>
         <span> 
           <br>No.2
-          <br>Capacidad 8
+          <br>Capacidad {{mesas_capacidad[1].mesa_capacidad}}
         </span>
         <v-spacer></v-spacer>
       </v-row>
@@ -55,7 +55,7 @@
         </v-col>
         <span>
                 <br>No.3
-                <br>Capacidad 6
+                <br>Capacidad {{mesas_capacidad[2].mesa_capacidad}}
         </span>
         <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
         <div v-show="disp[3].cli_id !== null">
@@ -66,7 +66,7 @@
         </v-col>
         <span>
                 <br>No.4
-                <br>Capacidad 8
+                <br>Capacidad {{mesas_capacidad[3].mesa_capacidad}}
         </span>
         <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
         <div v-show="disp[4].cli_id !== null">
@@ -77,7 +77,7 @@
         </v-col>
         <span>
                 <br>No.5
-                <br>Capacidad 4
+                <br>Capacidad {{mesas_capacidad[4].mesa_capacidad}}
         </span>
         <v-spacer></v-spacer>
       </v-row>
@@ -91,7 +91,7 @@
         </v-col>
         <span>
                 <br>No.6
-                <br>Capacidad 4
+                <br>Capacidad {{mesas_capacidad[5].mesa_capacidad}}
         </span>
         <v-spacer></v-spacer>
         <div v-show="disp[6].cli_id !== null">
@@ -102,7 +102,7 @@
         </v-col>
         <span>
                 <br>No.7
-                <br>Capacidad 4
+                <br>Capacidad {{mesas_capacidad[6].mesa_capacidad}}
         </span>
         <v-spacer></v-spacer>
       </v-row>
@@ -120,11 +120,14 @@
     data () {
       return {
         disp: null,
+
+        mesas_capacidad: [],
       }
     },
 
     created(){
       this.mesas_disponibles();
+      this.llenar_capacidad();
     },
 
     methods: {
@@ -132,7 +135,14 @@
         const api_data = await this.axios.get('/mesas/mesas_disponibles/');
         this.disp = api_data.data;
       },
+
+      async llenar_capacidad(){
+        const api_data = await this.axios.get('mesas/llenar_capacidad');
+        this.mesas_capacidad = api_data.data;
+      },
+
     },
+
     components: {
       
 

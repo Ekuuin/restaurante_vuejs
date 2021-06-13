@@ -208,7 +208,7 @@ export default {
                 dp_cantidadPedida: '',
                 dp_especificaciones: '',
             };
-            this.det_prestamo.forEach(async (articulo) => {
+            this.det_pedido.forEach(async (articulo) => {
                 body.dp_prod_id = articulo.dp_prod_id;
                 body.dp_cantidadPedida = articulo.dp_cantidadPedida;
                 body.dp_especificaciones = articulo.dp_especificaciones;

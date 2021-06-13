@@ -14,6 +14,7 @@
             </v-col>
             <v-spacer></v-spacer>
         </v-row>
+
         <v-data-table
             :headers="headers"
             :items="orden"
@@ -31,8 +32,8 @@
                 <v-icon @click="eliminar_orden(item)" small class="mr-3">
                     fas fa-trash
                 </v-icon>
-                <v-icon @click="editar_orden(item)" small>
-                    fas fa-pencil-alt
+                <v-icon @click="detalles_orden(item), leer_pedidos(item)" small>
+                    fas fa-eye
                 </v-icon>
             </template>
         </v-data-table>
@@ -65,17 +66,50 @@
             </v-card>
         </v-dialog>
 
-        <v-dialog v-model='np_dialog' max-width="800px">
+        <v-dialog v-model='np_dialog' fullscreen>
              <v-card style="background-color:#FCD55F">
                 <v-card-title>
-                    Agregar Productos
+                    Detalles Orden No.{{dp_ord_id}}
                     <v-spacer></v-spacer>
-                    <v-btn color="success" @click="agregar_renglon()">Agregar Producto</v-btn>
+                    <v-btn color="success" @click="agregar_producto()">Agregar Productos</v-btn>
+                </v-card-title>
+                <v-card-text>
+                    <v-container style="background-color:#FC6C5F">
+                        <v-data-table
+                            :headers="h_prod"
+                            :items="pedidos"
+                            :items-per-page="10"
+                            sort-by="ord_id"
+                        >                
+                            <template v-slot:[`item.actions`]="{item}">
+                                <v-icon @click="eliminar_prod(item)" small class="mr-3">
+                                    fas fa-trash
+                                </v-icon>
+                                <v-icon @click="editar_prod(item)" small>
+                                    fas fa-pencil-alt
+                                </v-icon>
+                            </template>
+                        </v-data-table>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="error" @click="salir()">Salir</v-btn> 
+                   <v-spacer></v-spacer>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model='prod_dialog' max-width="800">
+             <v-card style="background-color:#FCD55F">
+                <v-card-title>
+                    Agregar Productos a Orden No.{{dp_ord_id}}
+                    <v-spacer></v-spacer>
+                    <v-btn color="success" @click="agregar_renglon()">Nuevo Producto</v-btn>
                 </v-card-title>
                 <v-card-text>
                     <v-container v-for="(articulo, index) in det_pedido" :key="index" style="background-color:#FC6C5F">
                             <v-row>
-                                {{det_pedido.index}}
                                 <v-col cols="6">
                                     <v-select
                                      :items="categorias"
@@ -123,8 +157,8 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color='success' @click="guardar_dp()"> Guardar</v-btn>
-                    <v-btn color="error" @click="cancelar()"> Cancelar</v-btn> 
+                    <v-btn color='success' @click="guardar_dp()">Guardar</v-btn>
+                    <v-btn color="error" @click="cancelar()">Cancelar</v-btn> 
                    <v-spacer></v-spacer>
                 </v-card-actions>
             </v-card>
@@ -147,16 +181,27 @@ export default {
               { text: 'Acciones', value: 'actions'}
             ],
 
+            h_prod: [
+              { text: 'Identificador del producto', align: 'start', value: 'dp_prod_id',},
+              { text: 'Nombre del producto', value: 'prod_nombre' },
+              { text: 'Precio Unitario', value: 'prod_precio' },
+              { text: 'Cantidad', value: 'dp_cantidadPedida' },
+              { text: 'Subtotal', value: 'subtotal' },
+              { text: 'Acciones', value: 'actions'}
+            ],
+
             orden: [],
             mesero: [],
             producto:[],
             categorias:[],
             det_pedido:[],
+            pedidos:[],
 
             dp_ord_id: '',
 
             nl_dialog: false,
             np_dialog: false,
+            prod_dialog: false,
 
             nueva_orden: {
                 ord_mesa_id: this.id,
@@ -203,15 +248,15 @@ export default {
             this.orden = api_data.data;
         },
 
-        async eliminar_orden(item){
+        async leer_pedidos(){
             const body = {
-              ord_id: item.ord_id
+              ord_id: this.dp_ord_id
             };
-            await this.axios.post('/ordenes/eliminar_orden/', body);
-            this.llenar_orden(this.id);
+            const api_data = await this.axios.get('/ordenes/todos_los_pedidos', {params: body});
+            this.pedidos = api_data.data;
         },
 
-        async guardar_dp(item){
+        async guardar_dp(){
             const body = {
                 dp_ord_id: this.dp_ord_id,
                 dp_prod_id: '',
@@ -225,6 +270,7 @@ export default {
                 await this.axios.post('/ordenes/detalles_pedido/', body);
             });
             this.cancelar();
+            this.leer_pedidos();
         },
 
         async guardar(){
@@ -232,10 +278,32 @@ export default {
             this.llenar_orden(this.id);
             this.cancelar();
         },
+        
+        async eliminar_orden(item){
+            const body = {
+              ord_id: item.ord_id
+            };
+            await this.axios.post('/ordenes/eliminar_orden/', body);
+            this.llenar_orden(this.id);
+        },
 
-        editar_orden(item){
+        async eliminar_prod(item){
+            const body = {
+              dp_prod_id: item.dp_prod_id,
+              dp_ord_id: this.dp_ord_id
+            };
+            await this.axios.post('/ordenes/eliminar_prod/', body);
+            this.leer_pedidos();
+        },
+
+        detalles_orden(item){
             this.dp_ord_id = item.ord_id;
             this.np_dialog = true;
+        },
+
+        agregar_producto(){
+            this.prod_dialog = true;
+
         },
        
         agregar_renglon(){
@@ -250,9 +318,13 @@ export default {
         cancelar(){
             this.nueva_orden.ord_mro_nue = {};
             this.nl_dialog = false;
-            this.np_dialog = false;
             this.det_pedido = [];
+            this.prod_dialog = false;
         },
+
+        salir(){
+            this.np_dialog = false;
+        }
 
        
 

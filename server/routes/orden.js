@@ -18,6 +18,23 @@ router.get('/todas_las_ordenes/', async (req, res) => {
     }
 });
 
+router.get('/todos_los_pedidos/', async (req, res) => {
+    try{
+        const ord_id = req.query.ord_id;
+        const query = 'SELECT p.dp_cantidadPedida, p.dp_prod_id, l.prod_nombre, l.prod_precio, SUM(l.prod_precio*p.dp_cantidadPedida) AS subtotal FROM detallepedido AS p '+
+                        'INNER JOIN producto AS l ON p.dp_prod_id = l.prod_id '+
+                        'WHERE p.dp_ord_id = ? '+
+                        'GROUP BY p.dp_prod_id';
+        const pedidos = await connection.query(query, [ord_id]);
+
+        res.json(pedidos);
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
 router.get('/meseros', async (req, res) => {
     try{
         const query = 'SELECT * FROM mesero';
@@ -36,6 +53,21 @@ router.post('/eliminar_orden', async (req, res) => {
         const ord_id = req.body.ord_id;
         const query = 'DELETE FROM orden WHERE ord_id = ?';
         const result = await connection.query(query, [ord_id]);
+
+        res.json('OK');
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
+router.post('/eliminar_prod', async (req, res) => {
+    try{
+        const ord_id = req.body.dp_ord_id;
+        const prod_id = req.body.dp_prod_id
+        const query = 'DELETE FROM detallepedido WHERE dp_ord_id = ? AND dp_prod_id = ?';
+        const result = await connection.query(query, [ord_id, prod_id]);
 
         res.json('OK');
     } catch(error){
@@ -64,12 +96,9 @@ router.post('/detalles_pedido', async (req, res) => {
         const body = req.body;
         const query = 'INSERT INTO detallepedido ( dp_prod_id, dp_ord_id, dp_cantidadPedida, dp_especificaciones) VALUES (?, ?, ?, ?)';
         const result = await connection.query(query, [body.dp_prod_id, body.dp_ord_id, body.dp_cantidadPedida, body.dp_especificaciones]);
-
-       res.json('OK');
-    } catch(error){
-        return res.json({
-            error:error
-        });
+        res.json('OK');
+        } catch(error){
+        res.json({error:error});
     }
 });
 

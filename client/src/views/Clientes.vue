@@ -69,6 +69,8 @@
         headers: [
           { text: 'Identificador', color: 'red', align: 'start', sortable: true, value: 'cli_id',},
           { text: 'Nombre', value: 'cli_nombre'},
+          { text: 'Teléfono', value: 'cli_telefono'},        
+          { text: 'Dirección', value: 'cli_direccion'},
           { text: 'Mesa', value: 'cli_mesa_id'},
           { text: 'Acciones', value: 'actions'},
         ],
@@ -79,10 +81,7 @@
 
         nl_dialog: false,
 
-        nuevo_cliente: {
-          cli_nombre: '',
-          cli_mesa_id: ''
-        }
+        nuevo_cliente: [],
       }
     },
 
@@ -116,9 +115,13 @@
       },
 
       async guardar(){
+        for (let index = 0; index < this.clientes.length; index++)
+          if (this.clientes[index].cli_telefono == this.nuevo_cliente.cli_telefono)
+            return alert("Número de teléfono repetido :(");
+            
         const response = await this.axios.post('clientes/nuevo_cliente', this.nuevo_cliente);
         if(response.data != 'OK')
-          alert("No hay lugares disponibles en esta mesa :(");
+          return alert("No hay lugares disponibles en esta mesa :(");
         this.llenar_clientes();
         this.cancelar();
       },

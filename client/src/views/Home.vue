@@ -15,7 +15,7 @@
           <v-spacer></v-spacer>
       </v-row>
 
-    <v-container v-if="disp !== null" class='mx-5' style="color:#FCD55F; 
+    <v-container v-if="disp !== null && mesas_capacidad !== null" class='mx-5' style="color:#FCD55F; 
       font-family: 'Suez One'; 
       font-size: 25px; 
       text-stroke: 0.2px black; 
@@ -121,7 +121,7 @@
       return {
         disp: null,
 
-        mesas_capacidad: [],
+        mesas_capacidad: null,
       }
     },
 

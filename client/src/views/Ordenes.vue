@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container v-if="ocupado !== null">
         <v-row>
             <v-spacer></v-spacer>
             <v-col cols='auto'>
@@ -24,7 +24,7 @@
             <template v-slot:top>
                 <v-toolbar flat>
                    <v-spacer></v-spacer>
-                   <v-btn color='success' @click="nl_dialog = true" >Nueva Orden</v-btn>
+                   <v-btn color='success' @click="nl_dialog = true" :disabled="ocupado[0].asientos === 0 || ocupado === null">Nueva Orden</v-btn>
                 </v-toolbar>
             </template>
 
@@ -220,6 +220,8 @@ export default {
             det_pedido:[],
             pedidos:[],
 
+            ocupado: null,
+
             dp_ord_id: '',
             dp_prod_id: '',
 
@@ -246,9 +248,18 @@ export default {
         this.llenar_meseros();
         this.llenar_productos();
         this.llenar_categorias();
+        this.mesa_ocupada(this.id);
     },
     
     methods: {
+
+        async mesa_ocupada(id){
+            const body = {
+                mesa_id: id
+            };
+            const api_data = await this.axios.get('/ordenes/mesa_ocupada/', {params: body});
+            this.ocupado = api_data.data;
+        },
 
         async llenar_meseros(){
             const api_data = await this.axios.get('/ordenes/meseros/');

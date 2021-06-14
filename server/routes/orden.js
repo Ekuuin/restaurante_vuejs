@@ -18,6 +18,20 @@ router.get('/todas_las_ordenes/', async (req, res) => {
     }
 });
 
+router.get('/mesa_ocupada', async (req,res) => {
+    try{
+        const mesa_id = req.query.mesa_id;
+        const query = 'SELECT count(*) AS asientos FROM mesa AS m INNER JOIN cliente AS c ON m.mesa_id = c.cli_mesa_id WHERE m.mesa_id = ?';
+        const ocupado = await connection.query(query,[mesa_id]);
+        res.json(ocupado);
+    }   catch(error){
+            return res.json({
+                error:error
+            });
+    }
+
+})
+
 router.get('/todos_los_pedidos/', async (req, res) => {
     try{
         const ord_id = req.query.ord_id;

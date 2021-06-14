@@ -33,14 +33,14 @@ router.get('/mostrar_por_fecha/', async (req, res) => {
     }
 });
 
-router.get('/facturas_mesero_fecha/', async (req, res) => {
+router.get('/mostrar_por_mf/', async (req, res) => {
     try{
         const ord_fecha= req.query.ord_fecha;
         const mro_nue= req.query.mro_nue;
         const query = 'SELECT o.ord_id, o.ord_mesa_id, mr.mro_nombre, o.ord_fecha, f.fac_total FROM orden AS o ' +
                        'INNER JOIN mesero AS mr ON o.ord_mro_nue = mr.mro_nue '+
                        'INNER JOIN factura AS f ON o.ord_id = f.fac_ord_id '+
-                        'WHERE o.ord_fecha = ? AND mr.mro_nue = ?';
+                        'WHERE DATE(o.ord_fecha) = ? AND mr.mro_nue = ?';
         const mesero = await connection.query(query, [ord_fecha, mro_nue]);
  
         res.json(mesero);
@@ -51,17 +51,30 @@ router.get('/facturas_mesero_fecha/', async (req, res) => {
     }
 });
  
-router.get('/facturas_mesa_fecha/', async (req, res) => {
+router.get('/mostrar_por_mesaf/', async (req, res) => {
     try{
         const ord_fecha= req.query.ord_fecha;
-        const ord_mesa_id= req.query.ord_mesa_id;
+        const mesa_id= req.query.mesa_id;
         const query = 'SELECT o.ord_id, o.ord_mesa_id, mr.mro_nombre, o.ord_fecha, f.fac_total FROM orden AS o ' +
                        'INNER JOIN mesero AS mr ON o.ord_mro_nue = mr.mro_nue '+
                        'INNER JOIN factura AS f ON o.ord_id =f.fac_ord_id '+
-                        'WHERE o.ord_fecha = ? AND o.ord_mesa_id = ?;'
-        const mesa = await connection.query(query, [ord_fecha, ord_mesa_id]);
+                        'WHERE DATE(o.ord_fecha) = ? AND o.ord_mesa_id = ?;'
+        const mesa = await connection.query(query, [ord_fecha, mesa_id]);
  
         res.json(mesa);
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
+router.get('/llenar_mesa', async (req, res) => {
+    try{
+        const query = 'SELECT mesa_id FROM mesa';
+        const mesas = await connection.query(query);
+
+        res.json(mesas);
     } catch(error){
         return res.json({
             error:error

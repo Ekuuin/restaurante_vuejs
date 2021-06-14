@@ -59,8 +59,8 @@ router.post('/eliminar_categoria', async (req, res) => {
 router.post('/nuevo_producto', async (req, res) => { 
     try{
         const body = req.body;
-        const query = 'INSERT INTO producto (prod_nombre, prod_cat_id, prod_precio, prod_existencia) VALUES (?, ?, ?, ?)';
-        const result = await connection.query(query, [body.prod_nombre, body.prod_cat_id, body.prod_precio, body.prod_existencia]);
+        const query = 'INSERT INTO producto (prod_nombre, prod_cat_id, prod_precio) VALUES (?, ?, ?)';
+        const result = await connection.query(query, [body.prod_nombre, body.prod_cat_id, body.prod_precio]);
         res.json('OK');
     } catch(error){
         return res.json({

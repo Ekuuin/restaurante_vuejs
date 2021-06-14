@@ -34,6 +34,11 @@
           <router-link style="display: inline-block; text-decoration: none" :to="{name: 'Meseros'}">Meseros</router-link>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col>
+          <router-link style="display: inline-block; text-decoration: none" :to="{name: 'Facturas'}">Facturas</router-link>
+        </v-col>
+      </v-row>
       </v-container>
     </v-navigation-drawer>
 

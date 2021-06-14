@@ -85,7 +85,7 @@
                                 <v-icon @click="eliminar_prod(item)" small class="mr-3">
                                     fas fa-trash
                                 </v-icon>
-                                <v-icon @click="editar_prod(item)" small>
+                                <v-icon @click="detalles_producto(item)" small>
                                     fas fa-pencil-alt
                                 </v-icon>
                             </template>
@@ -94,7 +94,30 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
+                    <v-btn color="success" @click="pagar(), crear_factura(), desocupar_mesa()">Pagar</v-btn> 
                     <v-btn color="error" @click="salir()">Salir</v-btn> 
+                   <v-spacer></v-spacer>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model='cantidad_dialog' max-width="500px">
+             <v-card style="background-color:#FCD55F">
+                <v-card-title>
+                    Modificar cantidad
+                    <v-spacer></v-spacer>
+                </v-card-title>
+                <v-card-text>
+                    <v-container style="background-color:#FC6C5F">
+                        <v-text-field   v-model="det_pedido.dp_cantidadPedida"
+                                        label="Cantidad">
+                        </v-text-field>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="success" @click="editar_prod()">Guardar</v-btn> 
+                    <v-btn color="error" @click="cancelar()">Cancelar</v-btn> 
                    <v-spacer></v-spacer>
                 </v-card-actions>
             </v-card>
@@ -121,7 +144,7 @@
                                     </v-select>
                                 </v-col>
                                 <v-col cols="6">
-                                    <v-select
+                                    <v-autocomplete
                                        :items="producto.filter(p => p.prod_cat_id === articulo.cat)"
                                        v-model="articulo.dp_prod_id"
                                        label="Producto"
@@ -129,7 +152,7 @@
                                        item-value="prod_id"
                                        :disabled="articulo.cat.length == 0"
                                     >
-                                    </v-select>
+                                    </v-autocomplete>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -177,7 +200,7 @@ export default {
               { text: 'Número de Orden', align: 'start', value: 'ord_id',},
               { text: 'Nombre del Mesero', value: 'mro_nombre' },
               { text: 'Fecha', value: 'ord_fecha' },
-              { text: 'Estado', value: 'ord_pagada' },
+              { text: 'Estado', value: 'ord_estado' },
               { text: 'Acciones', value: 'actions'}
             ],
 
@@ -198,15 +221,17 @@ export default {
             pedidos:[],
 
             dp_ord_id: '',
+            dp_prod_id: '',
 
             nl_dialog: false,
             np_dialog: false,
             prod_dialog: false,
+            cantidad_dialog: false,
 
             nueva_orden: {
                 ord_mesa_id: this.id,
                 ord_mro_nue: '',
-                ord_pagada: 'n',
+                ord_estado: 'ABIERTA',
                },
         }
     },
@@ -296,14 +321,55 @@ export default {
             this.leer_pedidos();
         },
 
+        async pagar(){
+            const body = {
+                dp_ord_id: this.dp_ord_id
+            };
+            await this.axios.post('/ordenes/pagar_orden/', body);
+            this.llenar_orden(this.id);
+            this.salir();
+        },
+
+        async crear_factura(){
+            const body = {
+                dp_ord_id: this.dp_ord_id
+            };
+            await this.axios.post('/ordenes/crear_factura/', body);
+        },
+
+        async desocupar_mesa(){
+            const body = {
+                mesa_id: this.id
+                };
+            console.log(body.mesa_id);
+            await this.axios.post('/ordenes/desocupar_mesa', body);
+        },
+
+        async editar_prod(){
+            const body = {
+                dp_prod_id : this.dp_prod_id,
+                dp_ord_id : this.dp_ord_id,
+                dp_cantidadPedida : this.det_pedido.dp_cantidadPedida,
+            };
+            console.log(body);
+            await this.axios.post('/ordenes/editar_prod', body);
+            this.cancelar();
+            this.leer_pedidos();
+        },
+       
+
         detalles_orden(item){
             this.dp_ord_id = item.ord_id;
             this.np_dialog = true;
         },
 
+        detalles_producto(item){
+            this.dp_prod_id = item.dp_prod_id;
+            this.cantidad_dialog = true;
+        },
+
         agregar_producto(){
             this.prod_dialog = true;
-
         },
        
         agregar_renglon(){
@@ -320,13 +386,14 @@ export default {
             this.nl_dialog = false;
             this.det_pedido = [];
             this.prod_dialog = false;
+            this.cantidad_dialog = false;
         },
 
         salir(){
             this.np_dialog = false;
-        }
+        },
 
-       
+        
 
     },
    

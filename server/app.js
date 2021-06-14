@@ -18,6 +18,7 @@ app.use('/mesas', require('./routes/mesa'));
 app.use('/productos', require('./routes/producto'));
 app.use('/ordenes', require('./routes/orden'));
 app.use('/meseros', require('./routes/mesero'));
+app.use('/facturas', require('./routes/factura'));
 
 app.listen(3000, function(){
     console.log('API está corriendo');

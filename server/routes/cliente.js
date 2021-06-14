@@ -18,7 +18,6 @@ router.get('/todos_los_clientes', async (req, res) => {
 router.post('/eliminar_cliente', async (req, res) => {
     try{
         const cli_id = req.body.cli_id;
-        console.log(cli_id);
         const query = 'DELETE FROM cliente WHERE cli_id = ?';
         const result = await connection.query(query, [cli_id]);
 
@@ -38,7 +37,7 @@ router.post('/nuevo_cliente', async (req, res) => {
         if (capacidad[0].asientos_ocupados == capacidad[0].mesa_capacidad){
             return res.json('Asientos no disponibles');
         }
-        const query = 'INSERT INTO cliente (cli_nombre, cli_mesa_id, cli_direccion, cli_telefono) VALUES (? , ?, ?, ?)';
+        const query = 'INSERT INTO cliente (cli_nombre, cli_mesa_id, cli_direccion, cli_telefono) VALUES (?, ?, ?, ?)';
         const result = await connection.query(query, [body.cli_nombre, body.cli_mesa_id, body.cli_direccion, body.cli_telefono]);
         res.json('OK');
     } catch(error){

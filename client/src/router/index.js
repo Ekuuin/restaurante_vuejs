@@ -31,6 +31,11 @@ const routes = [
     name: 'Meseros',
     component: () => import('../views/Meseros.vue')
   },
+  {
+    path: '/Facturas',
+    name: 'Facturas',
+    component: () => import('../views/Facturas.vue')
+  },
 ]
 
 const router = new VueRouter({

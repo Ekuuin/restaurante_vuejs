@@ -41,8 +41,8 @@
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
-                <v-autocomplete v-model="nuevo_cliente.cli_mesa_id" label = 'Mesa' :items="mesas" item-text="mesa_id" item-value="mesa_id" outlined>
-                </v-autocomplete>
+                <v-select v-model="nuevo_cliente.cli_mesa_id" label = 'Mesa' :items="mesas" item-text="mesa_id" item-value="mesa_id" outlined>
+                </v-select>
               </v-col>
             </v-row>
           </v-container>
@@ -81,7 +81,12 @@
 
         nl_dialog: false,
 
-        nuevo_cliente: [],
+        nuevo_cliente: {
+          cli_nombre: '',
+          cli_telefono: '',
+          cli_mesa_id: '',
+          cli_direccion: '',
+        },
       }
     },
 

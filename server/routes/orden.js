@@ -62,6 +62,20 @@ router.post('/eliminar_orden', async (req, res) => {
     }
 });
 
+router.post('/pagar_orden', async (req, res) => {
+    try{
+        const ord_id = req.body.dp_ord_id;
+        const query = 'UPDATE orden SET ord_estado = "PAGADA" WHERE ord_id = ?';
+        const result = await connection.query(query, [ord_id]);
+
+        res.json(result);
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
 router.post('/eliminar_prod', async (req, res) => {
     try{
         const ord_id = req.body.dp_ord_id;
@@ -80,10 +94,55 @@ router.post('/eliminar_prod', async (req, res) => {
 router.post('/nueva_orden', async (req, res) => {
     try{
         const body = req.body;
-        const query = 'INSERT INTO orden (ord_mesa_id, ord_fecha, ord_mro_nue, ord_pagada) VALUES (?, NOW(), ?, ?)';
-        const result = await connection.query(query, [body.ord_mesa_id, body.ord_mro_nue, body.ord_pagada]);
+        const query = 'INSERT INTO orden (ord_mesa_id, ord_fecha, ord_mro_nue, ord_estado) VALUES (?, NOW(), ?, ?)';
+        const result = await connection.query(query, [body.ord_mesa_id, body.ord_mro_nue, body.ord_estado]);
 
         res.json('OK');
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
+router.post('/crear_factura', async (req, res) => {
+    try{
+        const body = req.body;
+        const query = 'INSERT INTO factura (fac_fecha, fac_ord_id, fac_total) '+
+                        'VALUES (NOW(), ?, (SELECT SUM(p.prod_precio*d.dp_cantidadPedida) FROM orden AS o '+
+                        'INNER JOIN detallepedido AS d ON o.ord_id = d.dp_ord_id '+
+                        'INNER JOIN producto AS p ON d.dp_prod_id = p.prod_id '+
+                        'WHERE o.ord_id = ?))';
+        const result = await connection.query(query, [body.dp_ord_id, body.dp_ord_id]);
+
+        res.json(result);
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
+router.post('/desocupar_mesa', async (req, res) => {
+    try{
+        const body = req.body;
+        const query = 'DELETE FROM cliente WHERE cli_mesa_id = ?';
+        const result = await connection.query(query, [body.mesa_id]);
+        res.json('OK');
+        } catch(error){
+        res.json({error:error});
+    }
+});
+
+router.post('/editar_prod', async (req, res) => {
+    try{
+        const ord_id = req.body.dp_ord_id;
+        const prod_id = req.body.dp_prod_id;
+        const cantidad = req.body.dp_cantidadPedida;
+        const query = 'UPDATE detallepedido SET dp_cantidadPedida = ? WHERE dp_ord_id = ? AND dp_prod_id = ?';
+        const result = await connection.query(query, [cantidad, ord_id, prod_id]);
+        
+        res.json(result);
     } catch(error){
         return res.json({
             error:error

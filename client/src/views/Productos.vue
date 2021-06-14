@@ -42,12 +42,8 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols = '6'>
+              <v-col cols = 'auto'>
                 <v-text-field v-model="nuevo_producto.prod_precio" label = 'Precio'>
-                </v-text-field>
-              </v-col>
-              <v-col cols = '6'>
-                <v-text-field v-model="nuevo_producto.prod_existencia" label = 'Existencia'>
                 </v-text-field>
               </v-col>
             </v-row>
@@ -117,7 +113,6 @@
           { text: 'Nombre', value: 'prod_nombre'},
           { text: 'Categoría', value: 'cat_nombre'},
           { text: 'Precio', value: 'prod_precio'},
-          { text: 'Existencia', value: 'prod_existencia'},
           { text: 'Acciones', value: 'actions'},  
         ],
 
@@ -139,7 +134,6 @@
           prod_nombre: '',
           cat_nombre: '',
           prod_precio: '',
-          prod_existencia: '',
         },
 
         nueva_categoria:{

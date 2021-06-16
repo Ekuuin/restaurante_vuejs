@@ -3,14 +3,14 @@
         <v-row>
             <v-spacer></v-spacer>
             <v-col cols='auto'>
-                <a 
+                <span 
                 style="color:#FCD55F; 
                     font-family: 'Suez One'; 
                     font-size: 50px; 
                     text-stroke: 0.2px black; 
                     text-shadow: -1px 1px 1px #000, 1px 1px 1px #000, -1px 1px 1px #000, 1px -1px 1px #000">
                     Órdenes - Mesa {{$route.params.id}}
-                </a>
+                </span>
             </v-col>
             <v-spacer></v-spacer>
         </v-row>
@@ -354,6 +354,7 @@ export default {
                 };
             console.log(body.mesa_id);
             await this.axios.post('/ordenes/desocupar_mesa', body);
+            location.reload();
         },
 
         async editar_prod(){

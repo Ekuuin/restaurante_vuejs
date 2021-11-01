@@ -1,11 +1,11 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const { promisify } = require('util');
 
 // Configurar la conexión a la base de datos
 const connection = mysql.createPool({
     host: 'localhost',
-    user: 'usuario',
-    password: '123456789',
+    user: 'root',
+    password: '3795640801',
     database: 'restaurante_db'
 });
 

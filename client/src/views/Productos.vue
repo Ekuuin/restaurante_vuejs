@@ -5,56 +5,73 @@
       :headers="headers"
       :items="productos"
       :sort-by="['prod_id']"
-      :items-per-page="5"
+      :items-per-page="10"
     >
       <template v-slot:top>
         <v-toolbar flat color="primary">
           <v-toolbar-title>Productos</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="nl_dialog = true" class="mr-3"
+          <v-btn
+            color="success"
+            @click="nuevoProducto_dialog = true"
+            class="mr-3"
             >Nuevo Producto</v-btn
           >
 
-          <v-btn color="success" @click="np_dialog = true"
-            >Nueva Categoria</v-btn
+          <v-btn color="success" @click="nuevaCategoria_dialog = true"
+            >Nueva Categoría</v-btn
           >
         </v-toolbar>
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon @click="eliminar_producto(item)" small> fas fa-trash </v-icon>
+        <v-icon @click="eliminar_producto(item)" small class="mr-3"> fas fa-trash </v-icon>
+        <v-icon @click="editar_mesero(item)" small> fas fa-pencil-alt</v-icon>
       </template>
     </v-data-table>
 
-    <v-dialog v-model="nl_dialog" max-width="500px">
-      <v-card style="background-color: #fcd55f">
+    <v-dialog v-model="nuevoProducto_dialog" max-width="400px">
+      <v-card elevation="1" style="background-color: #fcd55f">
         <v-card-title> Nuevo Producto </v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
-            <v-row>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="nuevo_producto.prod_nombre"
-                  label="Nombre"
-                >
-                </v-text-field>
-              </v-col>
-              <v-col cols="6">
+            <v-row no-gutters>
+              <v-col cols="12">
                 <v-autocomplete
                   v-model="nuevo_producto.prod_cat_id"
                   label="Categoria"
                   :items="categorias"
                   item-text="cat_nombre"
                   item-value="cat_id"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
                 >
                 </v-autocomplete>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="auto">
+            <v-row no-gutters>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="nuevo_producto.prod_nombre"
+                  label="Nombre"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
+                  clearable
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col cols="12">
                 <v-text-field
                   v-model="nuevo_producto.prod_precio"
                   label="Precio"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
+                  clearable
                 >
                 </v-text-field>
               </v-col>
@@ -63,15 +80,15 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="guardar()">Guardar</v-btn>
+          <v-btn color="success" @click="guardarProducto()">Guardar</v-btn>
           <v-btn color="error" @click="cancelar()">Cancelar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="np_dialog" max-width="500px">
+    <v-dialog v-model="nuevaCategoria_dialog" max-width="700px">
       <v-card style="background-color: #fcd55f">
-        <v-card-title> Nueva Categoria </v-card-title>
+        <v-card-title> Nueva Categoría </v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row>
@@ -79,6 +96,10 @@
                 <v-text-field
                   v-model="nueva_categoria.cat_nombre"
                   label="Nombre"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
+                  clearable
                 >
                 </v-text-field>
               </v-col>
@@ -91,16 +112,17 @@
               :items-per-page="5"
             >
               <template v-slot:[`item.actions`]="{ item }">
-                <v-icon @click="eliminar_categoria(item)" small>
+                <v-icon @click="eliminarCatergoria(item)" small class="mr-3">
                   fas fa-trash
                 </v-icon>
+                <v-icon @click="editarCategoria(item)" small> fas fa-pencil-alt</v-icon>
               </template>
             </v-data-table>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="guardar_cat()">Guardar</v-btn>
+          <v-btn color="success" @click="guardarCategoria()">Guardar</v-btn>
           <v-btn color="error" @click="cancelar()">Salir</v-btn>
         </v-card-actions>
       </v-card>
@@ -145,8 +167,8 @@ export default {
       productos: [],
       categorias: [],
 
-      nl_dialog: false,
-      np_dialog: false,
+      nuevoProducto_dialog: false,
+      nuevaCategoria_dialog: false,
 
       nuevo_producto: {
         prod_nombre: "",
@@ -161,17 +183,17 @@ export default {
   },
 
   created() {
-    this.llenar_productos();
-    this.llenar_categorias();
+    this.obtenerProductos();
+    this.obtenerCategorias();
   },
 
   methods: {
-    async llenar_productos() {
+    async obtenerProductos() {
       const api_data = await this.axios.get("productos/todos_los_productos");
       this.productos = api_data.data;
     },
 
-    async llenar_categorias() {
+    async obtenerCategorias() {
       const api_data = await this.axios.get("productos/obtener_categorias");
       this.categorias = api_data.data;
     },
@@ -181,34 +203,40 @@ export default {
         prod_id: item.prod_id,
       };
       await this.axios.post("productos/eliminar_producto", body);
-      this.llenar_productos();
+      this.obtenerProductos();
     },
 
-    async eliminar_categoria(item) {
+    async eliminarCatergoria(item) {
       const body = {
         cat_id: item.cat_id,
       };
       await this.axios.post("productos/eliminar_categoria", body);
-      this.llenar_categorias();
+      this.obtenerCategorias();
+      this.obtenerProductos();
     },
 
     cancelar() {
       this.nuevo_producto = {};
       this.nueva_categoria = {};
-      this.nl_dialog = false;
-      this.np_dialog = false;
+      this.nuevoProducto_dialog = false;
+      this.nuevaCategoria_dialog = false;
     },
 
-    async guardar() {
+    async guardarProducto() {
       await this.axios.post("productos/nuevo_producto", this.nuevo_producto);
-      this.llenar_productos();
+      this.obtenerProductos();
       this.cancelar();
     },
 
-    async guardar_cat() {
-        await this.axios.post("productos/nueva_categoria",this.nueva_categoria);
-        this.llenar_categorias();
-        this.nueva_categoria = {};
+    async guardarCategoria() {
+      if(this.nueva_categoria.cat_nombre == null || this.nueva_categoria.cat_nombre == "")
+      {
+        return alert("Ingrese nombre de categoría");
+      }
+      console.log(this.nueva_categoria);
+      await this.axios.post("productos/nueva_categoria", this.nueva_categoria);
+      this.obtenerCategorias();
+      this.nueva_categoria = {};
     },
   },
   components: {},

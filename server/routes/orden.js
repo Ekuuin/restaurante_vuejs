@@ -119,24 +119,6 @@ router.post('/nueva_orden', async (req, res) => {
     }
 });
 
-router.post('/crear_factura', async (req, res) => {
-    try{
-        const body = req.body;
-        const query = 'INSERT INTO factura (fac_fecha, fac_ord_id, fac_total) '+
-                        'VALUES (NOW(), ?, (SELECT SUM(p.prod_precio*d.dp_cantidadPedida) FROM orden AS o '+
-                        'INNER JOIN detallepedido AS d ON o.ord_id = d.dp_ord_id '+
-                        'INNER JOIN producto AS p ON d.dp_prod_id = p.prod_id '+
-                        'WHERE o.ord_id = ?))';
-        const result = await connection.query(query, [body.dp_ord_id, body.dp_ord_id]);
-
-        res.json(result);
-    } catch(error){
-        return res.json({
-            error:error
-        });
-    }
-});
-
 router.post('/desocupar_mesa', async (req, res) => {
     try{
         const body = req.body;

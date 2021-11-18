@@ -91,17 +91,17 @@
     },
 
     created(){
-      this.llenar_clientes();
-      this.llenar_mesa();
+      this.obtenerClientes();
+      this.obtenerMesas();
     },
 
     methods:{
-      async llenar_clientes(){
+      async obtenerClientes(){
         const api_data = await this.axios.get('clientes/todos_los_clientes');
         this.clientes = api_data.data;
       },
 
-      async llenar_mesa(){
+      async obtenerMesas(){
         const api_data = await this.axios.get('mesas/llenar_mesa');
         this.mesas = api_data.data;
       },
@@ -111,7 +111,7 @@
           cli_id: item.cli_id
         };
         await this.axios.post('clientes/eliminar_cliente', body);
-        this.llenar_clientes();
+        this.obtenerClientes();
       },
 
       cancelar(){
@@ -127,7 +127,7 @@
         const response = await this.axios.post('clientes/nuevo_cliente', this.nuevo_cliente);
         if(response.data != 'OK')
           return alert("No hay lugares disponibles en esta mesa :(");
-        this.llenar_clientes();
+        this.obtenerClientes();
         this.cancelar();
       },
 

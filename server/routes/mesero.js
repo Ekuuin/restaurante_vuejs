@@ -29,6 +29,21 @@ router.post('/eliminar_mesero', async (req, res) => {
     }
 });
 
+router.post('/editar_mesero', async (req, res) => {
+    try {
+        const body = req.body;
+        const query = 'UPDATE mesero SET mro_nombre = ?, mro_honorarios = ?, mro_direccion = ?, mro_telefono = ?' +
+                        ', mro_email = ? WHERE mro_nue = ?';
+        const result = await connection.query(query, [body.mro_nombre, body.mro_honorarios, body.mro_direccion,
+                        body.mro_telefono, body.mro_email, body.mro_nue]);
+        res.json('OK');
+    } catch (error) {
+        return res.json({
+            error:error.code
+        })
+    }
+})
+
 router.post('/nuevo_mesero', async (req, res) => { 
     try{
         const body = req.body;

@@ -38,7 +38,7 @@
         <v-icon @click="eliminar_orden(item)" small class="mr-3">
           fas fa-trash
         </v-icon>
-        <v-icon @click="detalles_orden(item), leer_pedidos(item)" small>
+        <v-icon @click="detalles_orden(item), leerPedidosOrden()" small>
           fas fa-eye
         </v-icon>
       </template>
@@ -65,7 +65,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="guardar()">Guardar</v-btn>
+          <v-btn color="success" @click="guardarOrden()">Guardar</v-btn>
           <v-btn color="error" @click="cancelarNuevaOrden()">Cancelar</v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
@@ -77,7 +77,7 @@
         <v-card-title>
           Detalles Orden No.{{ dp_ord_id }}
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="agregar_producto()"
+          <v-btn color="success" @click="agregar_producto()" :disabled="ord_estado == 'PAGADA'"
             >Agregar Productos</v-btn
           >
         </v-card-title>
@@ -90,10 +90,10 @@
               sort-by="ord_id"
             >
               <template v-slot:[`item.actions`]="{ item }">
-                <v-icon @click="eliminar_prod(item)" small class="mr-3">
+                <v-icon @click="eliminar_prod(item)" small class="mr-3" :disabled="ord_estado == 'PAGADA'">
                   fas fa-trash
                 </v-icon>
-                <v-icon @click="detalles_producto(item)" small>
+                <v-icon @click="detalles_producto(item)" small :disabled="ord_estado == 'PAGADA'">
                   fas fa-pencil-alt
                 </v-icon>
               </template>
@@ -105,6 +105,7 @@
           <v-btn
             color="success"
             @click="pagar(), crear_factura(), desocupar_mesa()"
+            :disabled="ord_estado == 'PAGADA'"
             >Pagar</v-btn
           >
           <v-btn color="error" @click="cancelarDetallesOrden()">Cancelar</v-btn>
@@ -258,6 +259,7 @@ export default {
 
       ocupado: null,
 
+      ord_estado: "",
       dp_ord_id: "",
       dp_prod_id: "",
 
@@ -279,15 +281,15 @@ export default {
   },
 
   created() {
-    this.llenar_orden(this.id);
-    this.llenar_meseros();
-    this.llenar_productos();
-    this.llenar_categorias();
-    this.mesa_ocupada(this.id);
+    this.obtenerOrdenes(this.id);
+    this.obtenerMeseros();
+    this.obtenerProductos();
+    this.obtenerCategorias();
+    this.mesaOcupada(this.id);
   },
 
   methods: {
-    async mesa_ocupada(id) {
+    async mesaOcupada(id) {
       const body = {
         mesa_id: id,
       };
@@ -297,22 +299,22 @@ export default {
       this.ocupado = api_data.data;
     },
 
-    async llenar_meseros() {
+    async obtenerMeseros() {
       const api_data = await this.axios.get("/ordenes/meseros/");
       this.mesero = api_data.data;
     },
 
-    async llenar_categorias() {
+    async obtenerCategorias() {
       const api_data = await this.axios.get("productos/obtener_categorias");
       this.categorias = api_data.data;
     },
 
-    async llenar_productos() {
+    async obtenerProductos() {
       const api_data = await this.axios.get("/ordenes/productos/");
       this.producto = api_data.data;
     },
 
-    async llenar_orden(id) {
+    async obtenerOrdenes(id) {
       const body = {
         mesa_id: id,
       };
@@ -322,7 +324,7 @@ export default {
       this.orden = api_data.data;
     },
 
-    async leer_pedidos() {
+    async leerPedidosOrden() {
       const body = {
         ord_id: this.dp_ord_id,
       };
@@ -332,6 +334,7 @@ export default {
       this.pedidos = api_data.data;
     },
 
+    //Leer de manera secuencial - obtiene cada Promise
     async guardar_agregarProductos() {
       const body = {
         dp_ord_id: this.dp_ord_id,
@@ -339,19 +342,40 @@ export default {
         dp_cantidadPedida: "",
         dp_especificaciones: "",
       };
-      this.det_pedido.forEach( async (articulo) => {
+      for(const articulo of this.det_pedido){
         body.dp_prod_id = articulo.dp_prod_id;
         body.dp_cantidadPedida = articulo.dp_cantidadPedida;
         body.dp_especificaciones = articulo.dp_especificaciones;
         await this.axios.post("/ordenes/detalles_pedido/", body);
-      });
-      this.leer_pedidos();
+      };
+      this.leerPedidosOrden();
       this.cancelarAgregarProductos();
     },
 
-    async guardar() {
+    //Leer de manera paralela - espera el array de Promise
+
+    // async guardar_agregarProductos() {
+    //   const body = {
+    //     dp_ord_id: this.dp_ord_id,
+    //     dp_prod_id: "",
+    //     dp_cantidadPedida: "",
+    //     dp_especificaciones: "",
+    //   };
+    //   await Promise.all(this.det_pedido.map(async (articulo) => {
+    //     body.dp_prod_id = articulo.dp_prod_id;
+    //     body.dp_cantidadPedida = articulo.dp_cantidadPedida;
+    //     body.dp_especificaciones = articulo.dp_especificaciones;
+    //     await this.axios.post("/ordenes/detalles_pedido/", body);
+    //   }));
+    //   this.cancelarAgregarProductos();
+    //   this.leerPedidosOrden();
+    // },
+
+    
+
+    async guardarOrden() {
       await this.axios.post("/ordenes/nueva_orden", this.nueva_orden);
-      this.llenar_orden(this.id);
+      this.obtenerOrdenes(this.id);
       this.cancelarNuevaOrden();
     },
 
@@ -360,7 +384,7 @@ export default {
         ord_id: item.ord_id,
       };
       await this.axios.post("/ordenes/eliminar_orden/", body);
-      this.llenar_orden(this.id);
+      this.obtenerOrdenes(this.id);
     },
 
     async eliminar_prod(item) {
@@ -369,7 +393,7 @@ export default {
         dp_ord_id: this.dp_ord_id,
       };
       await this.axios.post("/ordenes/eliminar_prod/", body);
-      this.leer_pedidos();
+      this.leerPedidosOrden();
     },
 
     async pagar() {
@@ -377,7 +401,7 @@ export default {
         dp_ord_id: this.dp_ord_id,
       };
       await this.axios.post("/ordenes/pagar_orden/", body);
-      this.llenar_orden(this.id);
+      this.obtenerOrdenes(this.id);
       this.cancelarDetallesOrden();
     },
 
@@ -385,7 +409,7 @@ export default {
       const body = {
         dp_ord_id: this.dp_ord_id,
       };
-      await this.axios.post("/ordenes/crear_factura/", body);
+      await this.axios.post("/facturas/crear_factura/", body);
     },
 
     async desocupar_mesa() {
@@ -403,11 +427,12 @@ export default {
         dp_cantidadPedida: this.det_pedido.dp_cantidadPedida,
       };
       await this.axios.post("/ordenes/editar_prod", body);
-      this.leer_pedidos();
+      this.leerPedidosOrden();
       this.cancelarCantidadProducto();
     },
 
     detalles_orden(item) {
+      this.ord_estado = item.ord_estado;
       this.dp_ord_id = item.ord_id;
       this.detallesOrden_dialog = true;
     },

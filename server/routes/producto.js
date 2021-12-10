@@ -82,5 +82,31 @@ router.post('/nueva_categoria', async (req, res) => {
     }
 });
 
+router.post('/editar_producto', async (req, res) => { 
+    try{
+        const body = req.body;
+        const query = 'UPDATE producto SET prod_nombre = ?, prod_cat_id = ?, prod_precio = ? WHERE prod_id = ?';
+        const result = await connection.query(query, [body.prod_nombre, body.prod_cat_id, body.prod_precio, body.prod_id]);
+        res.json('OK');
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
+router.post('/editar_categoria', async (req, res) => { 
+    try{
+        const body = req.body;
+        const query = 'UPDATE categoria SET cat_nombre = ? WHERE cat_id = ?';
+        const result = await connection.query(query, [body.cat_nombre, body.cat_id]);
+        res.json('OK');
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
 
 module.exports = router;

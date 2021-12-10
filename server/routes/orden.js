@@ -35,13 +35,31 @@ router.get('/mesa_ocupada', async (req,res) => {
 router.get('/todos_los_pedidos/', async (req, res) => {
     try{
         const ord_id = req.query.ord_id;
-        const query = 'SELECT p.dp_cantidadPedida, p.dp_prod_id, l.prod_nombre, l.prod_precio, SUM(l.prod_precio*p.dp_cantidadPedida) AS subtotal FROM detallepedido AS p '+
+        const query = 'SELECT r.cat_nombre, p.dp_cantidadPedida, p.dp_prod_id, l.prod_nombre, l.prod_precio, SUM(l.prod_precio*p.dp_cantidadPedida) AS subtotal FROM detallepedido AS p '+
                         'INNER JOIN producto AS l ON p.dp_prod_id = l.prod_id '+
+                        'INNER JOIN categoria AS r ON l.prod_cat_id = r.cat_id '+
                         'WHERE p.dp_ord_id = ? '+
                         'GROUP BY p.dp_prod_id';
         const pedidos = await connection.query(query, [ord_id]);
 
         res.json(pedidos);
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
+router.get('/total', async (req, res) => {
+    try{
+        const ord_id = req.query.ord_id;
+        const query = 'SELECT SUM(l.prod_precio*p.dp_cantidadPedida) AS total FROM detallepedido AS p '+
+        'INNER JOIN producto AS l ON p.dp_prod_id = l.prod_id '+
+        'INNER JOIN categoria AS r ON l.prod_cat_id = r.cat_id '+
+        'WHERE p.dp_ord_id = ?';
+        const total = await connection.query(query, [ord_id]);
+
+        res.json(total);
     } catch(error){
         return res.json({
             error:error

@@ -4,11 +4,13 @@
       <v-spacer></v-spacer>
       <v-col cols="auto">
         <span
-          style="color:#FCD55F; 
-              font-family: 'Suez One'; 
-              font-size: 50px; 
-              text-stroke: 0.2px black; 
-              text-shadow: -1px 1px 1px #000, 1px 1px 1px #000, -1px 1px 1px #000, 1px -1px 1px #000"
+          style="
+            color: #fcd55f;
+            font-family: 'Suez One';
+            font-size: 50px;
+            text-stroke: 0.2px black;
+            text-shadow: -1px 1px 1px #000, 1px 1px 1px #000, -1px 1px 1px #000, 1px -1px 1px #000;
+          "
         >
           Órdenes - Mesa {{ $route.params.id }}
         </span>
@@ -19,7 +21,7 @@
     <v-data-table
       :headers="headers"
       :items="orden"
-      :items-per-page="10"
+      :items-per-page="-1"
       sort-by="ord_id"
     >
       <template v-slot:top>
@@ -38,7 +40,10 @@
         <v-icon @click="eliminar_orden(item)" small class="mr-3">
           fas fa-trash
         </v-icon>
-        <v-icon @click="detalles_orden(item), leerPedidosOrden()" small>
+        <v-icon
+          @click="detalles_orden(item), leerPedidosOrden(), obtenerTotal()"
+          small
+        >
           fas fa-eye
         </v-icon>
       </template>
@@ -46,7 +51,9 @@
 
     <v-dialog v-model="nuevaOrden_dialog" max-width="500px">
       <v-card style="background-color: #fcd55f">
-        <v-card-title>Nueva Orden</v-card-title>
+        <v-card-title>
+          <v-btn color="gray">Seleccione Mesero</v-btn>
+        </v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row>
@@ -57,6 +64,10 @@
                   label="Meseros"
                   item-text="mro_nombre"
                   item-value="mro_nue"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
+                  clearable
                 >
                 </v-select>
               </v-col>
@@ -75,9 +86,12 @@
     <v-dialog v-model="detallesOrden_dialog" fullscreen>
       <v-card style="background-color: #fcd55f">
         <v-card-title>
-          Detalles Orden No.{{ dp_ord_id }}
+          <v-btn color="gray">Detalles de Orden No.{{ dp_ord_id }}</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="agregar_producto()" :disabled="ord_estado == 'PAGADA'"
+          <v-btn
+            color="success"
+            @click="agregar_producto()"
+            :disabled="ord_estado == 'PAGADA'"
             >Agregar Productos</v-btn
           >
         </v-card-title>
@@ -86,22 +100,34 @@
             <v-data-table
               :headers="h_prod"
               :items="pedidos"
-              :items-per-page="10"
+              :items-per-page="-1"
               sort-by="ord_id"
             >
               <template v-slot:[`item.actions`]="{ item }">
-                <v-icon @click="eliminar_prod(item)" small class="mr-3" :disabled="ord_estado == 'PAGADA'">
+                <v-icon
+                  @click="eliminar_prod(item)"
+                  small
+                  class="mr-3"
+                  :disabled="ord_estado == 'PAGADA'"
+                >
                   fas fa-trash
                 </v-icon>
-                <v-icon @click="detalles_producto(item)" small :disabled="ord_estado == 'PAGADA'">
+                <v-icon
+                  @click="detalles_producto(item)"
+                  small
+                  :disabled="ord_estado == 'PAGADA'"
+                >
                   fas fa-pencil-alt
                 </v-icon>
               </template>
             </v-data-table>
           </v-container>
+          <br />
+          <v-row justify="center">
+            <v-btn x-large color="secondary">Total ${{ total }}</v-btn>
+          </v-row>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
+        <v-card-actions class="justify-center">
           <v-btn
             color="success"
             @click="pagar(), crear_factura(), desocupar_mesa()"
@@ -109,7 +135,6 @@
             >Pagar</v-btn
           >
           <v-btn color="error" @click="cancelarDetallesOrden()">Cancelar</v-btn>
-          <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -125,6 +150,10 @@
             <v-text-field
               v-model="det_pedido.dp_cantidadPedida"
               label="Cantidad"
+              background-color="#fc6c5f"
+              color="black"
+              outlined
+              clearable
             >
             </v-text-field>
           </v-container>
@@ -132,7 +161,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="success" @click="editar_prod()">Guardar</v-btn>
-          <v-btn color="error" @click="cancelarCantidadProducto()">Cancelar</v-btn>
+          <v-btn color="error" @click="cancelarCantidadProducto()"
+            >Cancelar</v-btn
+          >
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -141,7 +172,7 @@
     <v-dialog v-model="agregarProductos_dialog" max-width="800">
       <v-card style="background-color: #fcd55f">
         <v-card-title>
-          Agregar Productos a Orden No.{{ dp_ord_id }}
+          <v-btn color="gray">Agregar Productos Orden No.{{ dp_ord_id }}</v-btn>
           <v-spacer></v-spacer>
           <v-btn color="success" @click="agregar_renglon()"
             >Nuevo Producto</v-btn
@@ -161,6 +192,10 @@
                   label="Categoria"
                   item-text="cat_nombre"
                   item-value="cat_id"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
+                  clearable
                 >
                 </v-select>
               </v-col>
@@ -174,6 +209,10 @@
                   item-text="prod_nombre"
                   item-value="prod_id"
                   :disabled="articulo.cat.length == 0"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
+                  clearable
                 >
                 </v-autocomplete>
               </v-col>
@@ -183,9 +222,11 @@
                 <v-text-field
                   v-model="articulo.dp_cantidadPedida"
                   label="Cantidad"
-                  single-line
-                  filled
                   :disabled="articulo.dp_prod_id.length == 0"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
+                  clearable
                 >
                 </v-text-field>
               </v-col>
@@ -193,9 +234,11 @@
                 <v-text-field
                   v-model="articulo.dp_especificaciones"
                   label="Especificaciones"
-                  single-line
-                  filled
                   :disabled="articulo.dp_prod_id.length == 0"
+                  background-color="#fc6c5f"
+                  color="black"
+                  outlined
+                  clearable
                 >
                 </v-text-field>
               </v-col>
@@ -214,8 +257,12 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="guardar_agregarProductos()">Guardar</v-btn>
-          <v-btn color="error" @click="cancelarAgregarProductos()">Cancelar</v-btn>
+          <v-btn color="success" @click="guardar_agregarProductos()"
+            >Guardar</v-btn
+          >
+          <v-btn color="error" @click="cancelarAgregarProductos()"
+            >Cancelar</v-btn
+          >
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -238,16 +285,12 @@ export default {
       ],
 
       h_prod: [
-        {
-          text: "Identificador del producto",
-          align: "start",
-          value: "dp_prod_id",
-        },
-        { text: "Nombre del producto", value: "prod_nombre" },
-        { text: "Precio Unitario", value: "prod_precio" },
-        { text: "Cantidad", value: "dp_cantidadPedida" },
-        { text: "Subtotal", value: "subtotal" },
-        { text: "Acciones", value: "actions" },
+        { text: "Producto", align: "center", value: "prod_nombre" },
+        { text: "Categoria", align: "center", value: "cat_nombre" },
+        { text: "Precio Unitario", align: "center", value: "prod_precio" },
+        { text: "Cantidad", align: "center", value: "dp_cantidadPedida" },
+        { text: "Subtotal", align: "center", value: "subtotal" },
+        { text: "Acciones", align: "center", value: "actions" },
       ],
 
       orden: [],
@@ -256,6 +299,7 @@ export default {
       categorias: [],
       det_pedido: [],
       pedidos: [],
+      total: [],
 
       ocupado: null,
 
@@ -324,6 +368,17 @@ export default {
       this.orden = api_data.data;
     },
 
+    async obtenerTotal() {
+      const body = {
+        ord_id: this.dp_ord_id,
+      };
+      const api_data = await this.axios.get("/ordenes/total", { params: body });
+      if(api_data.data[0].total == null)
+        this.total = 0;
+      else
+        this.total = api_data.data[0].total;
+    },
+
     async leerPedidosOrden() {
       const body = {
         ord_id: this.dp_ord_id,
@@ -342,13 +397,14 @@ export default {
         dp_cantidadPedida: "",
         dp_especificaciones: "",
       };
-      for(const articulo of this.det_pedido){
+      for (const articulo of this.det_pedido) {
         body.dp_prod_id = articulo.dp_prod_id;
         body.dp_cantidadPedida = articulo.dp_cantidadPedida;
         body.dp_especificaciones = articulo.dp_especificaciones;
         await this.axios.post("/ordenes/detalles_pedido/", body);
-      };
+      }
       this.leerPedidosOrden();
+      this.obtenerTotal();
       this.cancelarAgregarProductos();
     },
 
@@ -371,8 +427,6 @@ export default {
     //   this.leerPedidosOrden();
     // },
 
-    
-
     async guardarOrden() {
       await this.axios.post("/ordenes/nueva_orden", this.nueva_orden);
       this.obtenerOrdenes(this.id);
@@ -394,6 +448,7 @@ export default {
       };
       await this.axios.post("/ordenes/eliminar_prod/", body);
       this.leerPedidosOrden();
+      this.obtenerTotal();
     },
 
     async pagar() {
@@ -417,7 +472,7 @@ export default {
         mesa_id: this.id,
       };
       await this.axios.post("/ordenes/desocupar_mesa", body);
-      location.reload();
+      this.mesaOcupada(this.id);
     },
 
     async editar_prod() {
@@ -460,14 +515,14 @@ export default {
       this.nuevaOrden_dialog = false;
     },
 
-    cancelarCantidadProducto(){
-        this.det_pedido = [];
-        this.cantidadProducto_dialog = false;
+    cancelarCantidadProducto() {
+      this.det_pedido = [];
+      this.cantidadProducto_dialog = false;
     },
 
-    cancelarAgregarProductos(){
-        this.det_pedido = [];
-        this.agregarProductos_dialog = false;
+    cancelarAgregarProductos() {
+      this.det_pedido = [];
+      this.agregarProductos_dialog = false;
     },
 
     cancelarDetallesOrden() {

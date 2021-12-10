@@ -13,7 +13,7 @@
           </v-toolbar>
       </template>
 
-      <template v-slot:[`item.actions`]="{item}">
+      <template v-slot:[`item.actions`]={item}>
         <v-icon @click="eliminar_mesero(item)" small class="mr-3">
           fas fa-trash
         </v-icon>
@@ -26,7 +26,7 @@
     <v-dialog v-model="editarMesero_dialog" max-width="500px">
       <v-card style="background-color: #fcd55f">
         <v-card-title>
-          Editar Mesero #{{nuevo_mesero.mro_nue}}
+          <v-btn color="gray">Editar Mesero #{{nuevo_mesero.mro_nue}}</v-btn>
           <v-spacer></v-spacer>
         </v-card-title>
         <v-card-text>
@@ -227,7 +227,7 @@ export default {
 
     editar_mesero(item) {
       this.nuevo_mesero = Object.assign({}, item); //Copia los valores del objeto item al objeto nuevo_mesero para mostrarlos
-      this.editarMesero_dialog = true;            //en el dialog. Evita resultados raros.
+      this.editarMesero_dialog = true; //en el dialog. Evita resultados raros.
     },
   },
   components: {},

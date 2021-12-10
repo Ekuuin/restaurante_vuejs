@@ -87,17 +87,4 @@ router.get('/mostrar_por_mesaf/', async (req, res) => {
     }
 });
 
-router.get('/llenar_mesa', async (req, res) => {
-    try{
-        const query = 'SELECT mesa_id FROM mesa';
-        const mesas = await connection.query(query);
-
-        res.json(mesas);
-    } catch(error){
-        return res.json({
-            error:error
-        });
-    }
-});
-
 module.exports = router;

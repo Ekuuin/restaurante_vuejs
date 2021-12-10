@@ -28,7 +28,7 @@
 
     <v-dialog v-model="mesaFecha_dialog" max-width="500px">
       <v-card style="background-color: #fcd55f">
-        <v-card-title>Factura por Mesa-Fecha</v-card-title>
+        <v-card-title><v-btn color="gray">Factura por Mesa-Fecha</v-btn></v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row>
@@ -90,7 +90,7 @@
 
     <v-dialog v-model="meseroFecha_dialog" max-width="500px">
       <v-card style="background-color: #fcd55f">
-        <v-card-title>Factura por Mesero-Fecha</v-card-title>
+        <v-card-title><v-btn color="gray">Factura por Mesero-Fecha</v-btn></v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row>
@@ -154,7 +154,7 @@
 
     <v-dialog v-model="fecha_dialog" max-width="500px">
       <v-card style="background-color: #fcd55f">
-        <v-card-title>Factura por Fecha</v-card-title>
+        <v-card-title><v-btn color="gray">Factura por Fecha</v-btn></v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row>

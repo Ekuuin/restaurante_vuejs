@@ -23,7 +23,7 @@
     <v-dialog v-model='nl_dialog' max-width="500px">
       <v-card style="background-color:#FCD55F">
         <v-card-title>
-          Nuevo Cliente
+          <v-btn color="gray">Nuevo Cliente</v-btn> 
         </v-card-title>
         <v-card-text>
           <v-container style="background-color:#FC6C5F">

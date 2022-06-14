@@ -227,9 +227,9 @@ export default {
       mesas: [],
 
       select: {
-        ord_fecha: "",
-        mro_nue: "",
-        mesa_id: "",
+        ord_fecha: null,
+        mro_nue: null,
+        mesa_id: null,
       },
 
       menu1: false,
@@ -285,10 +285,16 @@ export default {
         ord_fecha: this.select.ord_fecha,
         mro_nue: this.select.mro_nue,
       };
+      if(body.ord_fecha == null){
+        const api_data = await this.axios.get("facturas/mostrar_por_mesero", {params: body});
+        this.orden = api_data.data;
+      }
+      else{
       const api_data = await this.axios.get("facturas/mostrar_por_mf", {
         params: body,
       });
       this.orden = api_data.data;
+      }
       this.cancelar();
     },
 
@@ -297,7 +303,6 @@ export default {
         ord_fecha: this.select.ord_fecha,
         mesa_id: this.select.mesa_id,
       };
-      console.log(body);
       const api_data = await this.axios.get("facturas/mostrar_por_mesaf", {
         params: body,
       });

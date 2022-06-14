@@ -68,7 +68,24 @@ router.get('/mostrar_por_mf/', async (req, res) => {
         });
     }
 });
+
+router.get('/mostrar_por_mesero/', async (req, res) => {
+    try{
+        const mro_nue= req.query.mro_nue;
+        const query = 'SELECT o.ord_id, o.ord_mesa_id, mr.mro_nombre, o.ord_fecha, f.fac_total FROM orden AS o ' +
+                       'INNER JOIN mesero AS mr ON o.ord_mro_nue = mr.mro_nue '+
+                       'INNER JOIN factura AS f ON o.ord_id = f.fac_ord_id '+
+                        'WHERE mr.mro_nue = ?';
+        const mesero = await connection.query(query, [mro_nue]);
  
+        res.json(mesero);
+    } catch(error){
+        return res.json({
+            error:error
+        });
+    }
+});
+
 router.get('/mostrar_por_mesaf/', async (req, res) => {
     try{
         const ord_fecha= req.query.ord_fecha;

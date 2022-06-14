@@ -222,6 +222,7 @@
                 <v-text-field
                   v-model="articulo.dp_cantidadPedida"
                   label="Cantidad"
+                  value="1"
                   :disabled="articulo.dp_prod_id.length == 0"
                   background-color="#fc6c5f"
                   color="black"
@@ -483,6 +484,7 @@ export default {
       };
       await this.axios.post("/ordenes/editar_prod", body);
       this.leerPedidosOrden();
+      this.obtenerTotal();
       this.cancelarCantidadProducto();
     },
 

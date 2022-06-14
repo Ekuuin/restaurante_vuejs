@@ -32,7 +32,7 @@
 
     <v-dialog v-model="nuevoProducto_dialog" max-width="400px">
       <v-card elevation="1" style="background-color: #fcd55f">
-        <v-card-title> Nuevo Producto </v-card-title>
+        <v-card-title><v-btn color="gray">Nuevo Producto</v-btn></v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row no-gutters>
@@ -88,7 +88,7 @@
 
     <v-dialog v-model="nuevaCategoria_dialog" max-width="700px">
       <v-card style="background-color: #fcd55f">
-        <v-card-title> Nueva Categoría </v-card-title>
+        <v-card-title><v-btn color="gray">Nueva Categoría</v-btn></v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row>
@@ -130,7 +130,7 @@
 
     <v-dialog v-model="editarProducto_dialog" max-width="400px">
       <v-card elevation="1" style="background-color: #fcd55f">
-        <v-card-title> Editar Producto </v-card-title>
+        <v-card-title><v-btn color="gray">Editar Producto</v-btn></v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row no-gutters>
@@ -186,7 +186,7 @@
 
     <v-dialog v-model="editarCategoria_dialog" max-width="400px">
       <v-card elevation="1" style="background-color: #fcd55f">
-        <v-card-title> Editar Categoria </v-card-title>
+        <v-card-title><v-btn color="gray">Editar Categoría</v-btn></v-card-title>
         <v-card-text>
           <v-container style="background-color: #fc6c5f">
             <v-row>
@@ -335,7 +335,6 @@ export default {
       {
         return alert("Ingrese nombre de categoría");
       }
-      console.log(this.nueva_categoria);
       await this.axios.post("productos/nueva_categoria", this.nueva_categoria);
       this.obtenerCategorias();
       this.nueva_categoria = {};

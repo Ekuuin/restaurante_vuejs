@@ -113,27 +113,58 @@
           <v-container style="background-color:#FC6C5F">
             <v-row>
               <v-col cols = '6'>
-                <v-text-field v-model="nuevo_mesero.mro_nombre" label = 'Nombre'>
+                <v-text-field 
+                v-model="nuevo_mesero.mro_nombre" 
+                label = 'Nombre'
+                background-color="#fc6c5f"
+                color="black"
+                outlined
+                clearable>
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
-                <v-text-field v-model="nuevo_mesero.mro_honorarios" label = 'Honorarios' type: int>
+                <v-text-field 
+                v-model="nuevo_mesero.mro_honorarios" 
+                label = 'Honorarios' 
+                type: int
+                background-color="#fc6c5f"
+                color="black"
+                outlined
+                clearable>
                 </v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols = '6'>
-                <v-text-field v-model="nuevo_mesero.mro_direccion" label = 'Dirección'>
+                <v-text-field 
+                v-model="nuevo_mesero.mro_direccion" 
+                label = 'Dirección'
+                background-color="#fc6c5f"
+                color="black"
+                outlined
+                clearable>
                 </v-text-field>
               </v-col>
               <v-col cols = '6'>
-                <v-text-field v-model="nuevo_mesero.mro_telefono" label = 'Teléfono'>
+                <v-text-field 
+                v-model="nuevo_mesero.mro_telefono" 
+                label = 'Teléfono'
+                background-color="#fc6c5f"
+                color="black"
+                outlined
+                clearable>
                 </v-text-field>
               </v-col>
             </v-row>
             <v-row>
                 <v-col cols='auto'>
-                    <v-text-field v-model="nuevo_mesero.mro_email" label = 'E-mail'>
+                    <v-text-field 
+                    v-model="nuevo_mesero.mro_email" 
+                    label = 'E-mail'
+                    background-color="#fc6c5f"
+                    color="black"
+                    outlined
+                    clearable>
                     </v-text-field>
                 </v-col>
             </v-row>

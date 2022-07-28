@@ -21,7 +21,6 @@
       <v-container
         class="mt-5"
         style="
-          color: #fcd55f;
           text-align: center;
           font-size: 30px;
           font-family: 'Suez One';
@@ -40,7 +39,7 @@
         <v-row>
           <v-col>
             <router-link
-              style="display: inline-block; text-decoration: none"
+              style="display: inline-block; text-decoration: none;"
               :to="{ name: 'Home' }"
               >Mesas</router-link
             >

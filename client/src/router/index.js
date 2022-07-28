@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '@/views/Home.vue'
+import Clientes from '@/views/Clientes.vue'
+
+// @ is an alias to /src
 
 Vue.use(VueRouter)
 
@@ -13,7 +16,7 @@ const routes = [
   {
     path: '/Clientes',
     name: 'Clientes',
-    component: () => import('../views/Clientes.vue')
+    component: Clientes
   },
   {
     path: '/Productos',
@@ -40,7 +43,8 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  routes
+  routes,
+  // If your built project is in dist folder, use this base ----> base: '/dist'
 })
 
 export default router
